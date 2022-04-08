@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+	<style type="text/css">
+		body{
+			display: flex;
+			align-items: center;
+			background-color: darkred;
+			justify-content: center;
+			min-height: 100vh;
+		}
+		.wrapper{
+			width: 380px;
+			overflow: hidden;
+			background-color: white;
+			border-radius: 10px;
+			position: relative;
+			padding: 25px 30px;
+			box-shadow: 0px 6px 15px rgb(0, 0, 0,0.15);
+		}
+		.wrapper i{
+			cursor: pointer;
+		}
+		.top-bar{
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			/*background: #515C6F;*/
+		}
+		.top-bar i{
+			font-size: 22px;
+			color: #515C6F;
+		}
+		.top-bar span{
+			font-size: 17px;
+			color: #515C6F;
+		}
+		.img-area{
+			width: 100%;
+			height: 256px;
+			margin-top: 25px;
+			border-radius: 15px;
+			overflow: hidden;
+			/*background: red;*/
+			box-shadow: 0px 6px 15px rgb(0,0,0,0.15);
+		}
+		.img-area img{
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+      .song-detail{
+      	text-align: center;
+      	margin: 5px 2px;
+      }
+      .song-detail .name{
+      	font-weight: 600;
+      	font-size: 21px;
+      }
+       .song-detail .artist{
+      	font-weight: 200;
+      	font-size: 12px;
+      }
+
+      .progress-area{
+      	height: 6px;
+      	width: 100%;
+      	background-color: 	 #b3b3b3;
+      	border-radius: 10px;
+      	cursor: pointer;
+      }
+      .progress-area .progress-bar{
+      	width: 50%;
+      	height: inherit;
+      	position: relative;
+      	border-radius: inherit;
+       background-color: skyblue;
+      }
+      .progress-bar::before{
+      	content: "";
+      	position: absolute;
+        height: 12px;
+        width: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        right: -5px;
+        background-color: inherit;
+        border-radius: inherit;
+        transition: 1s;
+
+      }
+      .progress-area .timer,.music-list .header,.music-list li{
+      	display: flex;
+      	width: 100%;
+      	align-items: center;
+      	justify-content: space-between;
+
+      }
+      .controls{
+      	margin: 31px 0px 10px 0px;
+      	display: flex;
+      	align-items: center;
+      	justify-content: space-between;
+      }
+      .controls i{
+      	color: hotpink;
+      }
+      .controls i:nth-child(2),
+      .controls i:nth-child(4){
+      	font-size: 45px;
+      }
+      .controls .play-pause{
+      	width: 54px;
+      	height: 54px;
+      	background: linear-gradient(to bottom,white,#cccccc);
+      	box-shadow: 0px 0px 5px hotpink;
+      	border-radius: 50%;
+      	display: flex;
+      	align-items: center;
+      	justify-content: center;
+      }
+      .play-pause i{
+      	width: 43px;
+      	height: 43px;
+      	position: relative;
+      	border-radius: inherit;
+      	text-align: center;
+      	line-height: 43px;
+      	background: inherit;
+      	background-clip: text;
+      	-webkit-background-clip: text;
+      	-webkit-text-fill-color: transparent;
+      }
+      .play-pause::before{
+      	content: "";
+      	position: absolute;
+      		width: 43px;
+      	height: 43px;
+      	border-radius: inherit;
+      	background: linear-gradient( #800080,violet);
+      }
+      .music-list{
+      	position: absolute;
+      	left: 0;
+      	bottom: -55%;
+      	opacity: 0;
+      	pointer-events: none;
+      	padding: 15px 22px;
+      	/*padding: 15px 30px;*/
+      	width: 90%;
+      	border-radius: 15px;
+      	box-shadow: 0px -5px 10px rgba(0, 0, 0,0.3);
+      	background: white;
+      	transition: all 0.14s ease-out;
+      }
+
+      .music-list.show{
+      	bottom: 0;
+      	opacity: 1;
+      	pointer-events: auto;
+      }
+      .music-list .header .row{
+      	display: flex;
+      	align-items: center;
+      	font-size: 16px;
+      }
+      .header .row i,.header .row span{
+      	color: #8c8c8c;
+      }
+      .music-list ul{
+      	margin: 10px 0;
+      	max-height: 260px;
+      	overflow-y: auto;
+      }
+      .music-list ul::-webkit-scrollbar{
+      	width: 0px;
+      }
+      .music-list ul li{
+      	list-style: none;
+      	padding-bottom: 10px;
+      	margin-bottom:10px ;
+      	border-bottom: 2px solid #e5e5e5;
+      }
+	</style>
+</head>
+<body>
+<div class="wrapper">
+	<div class="top-bar">
+		<i class="material-icons">expand_more</i>
+		<span>Now playing</span>
+		<i class="material-icons">more_horiz</i>
+	</div>
+	<div class="img-area">
+		<img src="" id="imgf">
+	</div>
+	<div class="song-detail">
+		<p class="name"></p>
+		<p class="artist"></p>
+	</div>
+	<div class="progress-area">
+		<div class="progress-bar">
+			<span></span>
+		</div>
+		<div class="timer">
+			<span class="current">0:00</span>
+			<span class="duration"></span>
+			<audio id="main-audio" src=""></audio>
+		</div>
+	</div>
+	<div class="controls">
+		<i class="material-icons">repeat</i>
+		<i class="material-icons" id="prev">skip_previous</i>
+		  <div class="play-pause">
+	     	<i class="material-icons">play_arrow</i>
+	     </div>
+	     <i class="material-icons" id="next">skip_next</i>
+		<i class="material-icons">queue_music</i>
+	   
+	</div>
+	<div class="music-list">
+		<div class="header">
+			<div class="row">
+				<i class="material-icons">queue_music</i>
+       <span>Music List</span>
+			</div>
+			<i class="material-icons">close</i>
+		</div>
+   <ul>
+   	<li>
+   		<div class="row">
+   			<span>Ikson Anywhere-ikson</span>
+   			<p>Audio Library</p>
+   		</div>
+   		<span class="audio-duration">5:40</span>
+   	</li>
+   	<li>
+   		<div class="row">
+   			<span>Ikson Anywhere-ikson</span>
+   			<p>Audio Library</p>
+   		</div>
+   		<span class="audio-duration">5:40</span>
+   	</li>
+   	<li>
+   		<div class="row">
+   			<span>Ikson Anywhere-ikson</span>
+   			<p>Audio Library</p>
+   		</div>
+   		<span class="audio-duration">5:40</span>
+   	</li>
+   	<li>
+   		<div class="row">
+   			<span>Ikson Anywhere-ikson</span>
+   			<p>Audio Library</p>
+   		</div>
+   		<span class="audio-duration">5:40</span>
+   	</li>
+   	<li>
+   		<div class="row">
+   			<span>Ikson Anywhere-ikson</span>
+   			<p>Audio Library</p>
+   		</div>
+   		<span class="audio-duration">5:40</span>
+   	</li>
+   	<li>
+   		<div class="row">
+   			<span>Ikson Anywhere-ikson</span>
+   			<p>Audio Library</p>
+   		</div>
+   		<span class="audio-duration">5:40</span>
+   	</li>
+   </ul>
+   </div>
+</div>
+</body>
+	<script src="music-list.js"></script>
+	<script  src="script.js"></script>
+</html>
